@@ -44,7 +44,7 @@ contract SwapContract {
 
     function swapUsdoToToken(address tokenAddress, uint256 usdoAmount) public {
         require(rates[tokenAddress] > 0, "Rate not set");
-        uint256 tokenAmount = usdoAmount * (rates[tokenAddress] / RATE_PRECISION);
+        uint256 tokenAmount = (usdoAmount * rates[tokenAddress]) / RATE_PRECISION;
         IERC20 usdo = IERC20(usdoAddress);
         IERC20 token = IERC20(tokenAddress);
         require(usdo.transferFrom(msg.sender, address(this), usdoAmount), "USDO transfer failed");
@@ -55,7 +55,7 @@ contract SwapContract {
 
     function swapTokenToUsdo(address tokenAddress, uint256 tokenAmount) public {
         require(rates[tokenAddress] > 0, "Rate not set");
-        uint256 usdoAmount = tokenAmount / (rates[tokenAddress] / RATE_PRECISION);
+        uint256 usdoAmount = (tokenAmount / rates[tokenAddress]) / RATE_PRECISION;
         IERC20 token = IERC20(tokenAddress);
         IERC20 usdo = IERC20(usdoAddress);
         require(token.transferFrom(msg.sender, address(this), tokenAmount), "Token transfer failed");
@@ -66,8 +66,8 @@ contract SwapContract {
 
     function swapTokenToToken(address fromTokenAddress, address toTokenAddress, uint256 fromAmount) public {
         require(rates[fromTokenAddress] > 0 && rates[toTokenAddress] > 0, "Rate not set");
-        uint256 usdoAmount = fromAmount / (rates[fromTokenAddress] / RATE_PRECISION);
-        uint256 toAmount = usdoAmount * (rates[toTokenAddress] / RATE_PRECISION);
+        uint256 usdoAmount = (fromAmount / rates[fromTokenAddress]) / RATE_PRECISION;
+        uint256 toAmount = (usdoAmount * rates[toTokenAddress]) / RATE_PRECISION;
         IERC20 fromToken = IERC20(fromTokenAddress);
         IERC20 toToken = IERC20(toTokenAddress);
         IERC20 usdo = IERC20(usdoAddress);
